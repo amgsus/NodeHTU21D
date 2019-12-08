@@ -1,0 +1,14 @@
+{
+  "name": "htu21d-service",
+  "version": "0.1.0",
+  "description": "Reads temperature from HTU21D sensor connected to Raspberry Pi hardware I2C",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-modules --no-warnings index.mjs"
+  },
+  "author": "A.G.",
+  "license": "MIT",
+  "dependencies": {
+    "i2c-bus": "5.1.0"
+  }
+}
