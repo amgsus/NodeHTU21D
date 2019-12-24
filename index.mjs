@@ -25,11 +25,25 @@ const HTU21D_ADDR = 0x40;
 function
 readTemperature(bus) {
     let buf = Buffer.alloc(2);
-    bus.i2cRead(HTU21D_ADDR, buf.length, buf).then(() => {
+    bus.i2cRead(HTU21D_ADDR, buf.length, buf).then(async () => {
         let rawData = (buf[0] << 8) | buf[1];
         let hex = `000${rawData.toString(16)}`.slice(-4).toUpperCase();
-        console.log(`Raw data:`, rawData, `(hex: 0x${hex})`);
+        console.log(`Raw data (T):`, rawData, `(hex: 0x${hex})`);
         let t = -46.85 + 175.72*(rawData)/65535;
-        console.log(`Temp: ${t.toFixed(1)} C`)
+        console.log(`Temp: ${t.toFixed(1)} C`);
+        await bus.i2cWrite(HTU21D_ADDR, 1, Buffer.from([0xF5]));
+        setTimeout(readHumidity, 50, bus);
+    }).catch((e) => console.error);
+}
+
+function
+readHumidity(bus) {
+    let buf = Buffer.alloc(2);
+    bus.i2cRead(HTU21D_ADDR, buf.length, buf).then(async () => {
+        let rawData = (buf[0] << 8) | buf[1];
+        let hex = `000${rawData.toString(16)}`.slice(-4).toUpperCase();
+        console.log(`Raw data (H):`, rawData, `(hex: 0x${hex})`);
+        let t = -6 + 125*(rawData)/65535;
+        console.log(`Humidity: ${t.toFixed(1)} %`);
     }).catch((e) => console.error);
 }
